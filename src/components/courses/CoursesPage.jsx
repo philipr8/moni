@@ -247,7 +247,7 @@ export default function CoursesPage() {
                                       onStageChange={s => updateChapterStage(course.id, ch, s)}
                                       notes={userData?.uploadedNotes?.[key] || []}
                                       onUpload={file => uploadNote(course.id, ch, file)}
-                                      onDeleteNote={(id, p) => deleteNote(course.id, ch, id, p)}
+                                      onDeleteNote={(id, p) => deleteNote(course.id, ch, id)}
                                       todos={userData?.chapterTodos?.[key] || []}
                                       onAddTodo={text => addChapterTodo(course.id, ch, text)}
                                       onToggleTodo={id => toggleChapterTodo(course.id, ch, id)}

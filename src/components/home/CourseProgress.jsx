@@ -190,7 +190,7 @@ export default function CourseProgress() {
                               onStageChange={s => updateChapterStage(course.id, ch, s)}
                               onNoteUpload={file => uploadNote(course.id, ch, file)}
                               notes={userData?.uploadedNotes?.[key] || []}
-                              onDeleteNote={(id, p) => deleteNote(course.id, ch, id, p)}
+                              onDeleteNote={(id, p) => deleteNote(course.id, ch, id)}
                               todos={userData?.chapterTodos?.[key] || []}
                               onAddTodo={text => addChapterTodo(course.id, ch, text)}
                               onToggleTodo={id => toggleChapterTodo(course.id, ch, id)}

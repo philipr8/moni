@@ -90,7 +90,7 @@ export default function NotesPage() {
               <div className="space-y-2">
                 {filtered.map(note => (
                   <NoteCard key={note.id} note={note} showContext
-                            onDelete={() => deleteNote(note.courseId, note.chapter, note.id, note.path)}/>
+                            onDelete={() => deleteNote(note.courseId, note.chapter, note.id)}/>
                 ))}
               </div>
             )}
@@ -154,7 +154,7 @@ export default function NotesPage() {
                                 <div className="px-3.5 pb-3 space-y-1.5">
                                   {chNotes.map(note => (
                                     <NoteCard key={note.id} note={note}
-                                              onDelete={() => deleteNote(course.id,ch,note.id,note.path)}/>
+                                              onDelete={() => deleteNote(course.id,ch,note.id)}/>
                                   ))}
                                 </div>
                               )}
