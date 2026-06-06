@@ -35,6 +35,7 @@ function ChapterRow({ course, chapterIdx, chapterName, stage, onStageChange, onN
   const handleUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (file.size === 0) { alert('File appears empty — try selecting it again'); e.target.value = ''; return; }
     setUploading(true);
     try { await onNoteUpload(file); } finally { setUploading(false); e.target.value = ''; }
   };

@@ -141,7 +141,7 @@ export default function NotesPage() {
                                   if (!fileRefs.current[key]) fileRefs.current[key] = document.createElement('input');
                                   const inp = fileRefs.current[key];
                                   inp.type='file'; inp.accept='.pdf,image/*';
-                                  inp.onchange=e=>{ const f=e.target.files?.[0]; if(f) handleUpload(course.id,ch,f); inp.value=''; };
+                                  inp.onchange=e=>{ const f=e.target.files?.[0]; if(!f) return; if(f.size===0){alert('File appears empty — try selecting it again');inp.value='';return;} handleUpload(course.id,ch,f); inp.value=''; };
                                   inp.click();
                                 }} disabled={isUp}
                                    className="flex items-center gap-1 text-xs rounded-lg px-2.5 py-1.5 font-semibold transition-all"

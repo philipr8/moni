@@ -42,21 +42,23 @@ async function uploadToCloudinary(file) {
     throw new Error('Cloudinary not configured. Add VITE_CLOUDINARY_CLOUD_NAME and VITE_CLOUDINARY_UPLOAD_PRESET to your .env file.');
   }
 
-  const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
-  // Use 'raw' for PDFs so Cloudinary stores the file as-is (not converted to image).
-  // Use 'image' for everything else.
-  const resourceType = isPdf ? 'raw' : 'image';
+  console.log('File name:', file.name);
+  console.log('File size:', file.size);
+  console.log('File type:', file.type);
 
   const formData = new FormData();
   formData.append('file', file);
   formData.append('upload_preset', uploadPreset);
+  formData.append('resource_type', 'auto');
 
   const res = await fetch(
-    `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`,
+    `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`,
     { method: 'POST', body: formData }
+    // Do NOT set Content-Type header — browser sets it with boundary
   );
 
   const data = await res.json();
+  console.log('Cloudinary response:', data);
 
   if (!res.ok || data.error) {
     throw new Error(data.error?.message || `Upload failed (${res.status})`);

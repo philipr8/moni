@@ -34,6 +34,7 @@ function ChapterDetail({ course, chapterIdx, stage, onStageChange, notes, onUplo
   const handleUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (file.size === 0) { alert('File appears empty — try selecting it again'); e.target.value = ''; return; }
     setUploading(true);
     try { await onUpload(file); } finally { setUploading(false); e.target.value = ''; }
   };
