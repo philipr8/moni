@@ -74,7 +74,7 @@ function ChapterRow({ course, chapterIdx, chapterName, stage, onStageChange, onN
             <div key={note.id} className="flex items-center gap-1 rounded-lg px-2 py-1"
                  style={{ background: 'rgba(255,255,255,0.05)' }}>
               {note.type?.includes('pdf') ? <FileText size={10} className="text-red-400"/> : <Image size={10} className="text-blue-400"/>}
-              <a href={note.url} target="_blank" rel="noreferrer"
+              <a href={note.isPdf ? note.url.replace("/raw/upload/", "/raw/upload/fl_attachment/") : note.url} target="_blank" rel="noreferrer"
                  className="text-[10px] font-medium max-w-[100px] truncate" style={{ color: '#60a5fa' }}>{note.name}</a>
               <button onClick={() => onDeleteNote(note.id)}
                       className="transition-colors" style={{ color: 'rgba(255,255,255,0.25)' }}>

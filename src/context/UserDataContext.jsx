@@ -30,30 +30,38 @@ const DEFAULT_DATA = {
   layoutMode: 'desktop',
 };
 
-/* ── Cloudinary upload (free, no Firebase Storage needed) ── */
+/* ── Cloudinary upload ──
+   PDFs → raw resource type (preserves the actual file)
+   Images → image resource type (optimised delivery)
+   ─────────────────────────────────────────────────── */
 async function uploadToCloudinary(file) {
-  const cloudName   = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-  const uploadPreset= import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+  const cloudName    = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+  const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
   if (!cloudName || !uploadPreset) {
     throw new Error('Cloudinary not configured. Add VITE_CLOUDINARY_CLOUD_NAME and VITE_CLOUDINARY_UPLOAD_PRESET to your .env file.');
   }
+
+  const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+  // Use 'raw' for PDFs so Cloudinary stores the file as-is (not converted to image).
+  // Use 'image' for everything else.
+  const resourceType = isPdf ? 'raw' : 'image';
 
   const formData = new FormData();
   formData.append('file', file);
   formData.append('upload_preset', uploadPreset);
 
   const res = await fetch(
-    `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`,
+    `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`,
     { method: 'POST', body: formData }
   );
 
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.error?.message || 'Upload failed');
+  const data = await res.json();
+
+  if (!res.ok || data.error) {
+    throw new Error(data.error?.message || `Upload failed (${res.status})`);
   }
 
-  const data = await res.json();
   return data.secure_url;
 }
 
@@ -191,7 +199,15 @@ export function UserDataProvider({ children }) {
   const uploadNote = useCallback(async (courseId, chapter, file) => {
     if (!uid || !userData) return null;
     const url = await uploadToCloudinary(file);
-    const note = { id: genId(), name: file.name, url, type: file.type, uploadedAt: Date.now() };
+    const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+    const note = {
+      id: genId(),
+      name: file.name,
+      url,
+      type: file.type,
+      isPdf,
+      uploadedAt: Date.now(),
+    };
     const key = `${courseId}-${chapter}`;
     const existing = userData.uploadedNotes?.[key] || [];
     await updateDoc(doc(db, 'users', uid), { [`uploadedNotes.${key}`]: [...existing, note] });

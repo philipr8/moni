@@ -89,7 +89,7 @@ function ChapterDetail({ course, chapterIdx, stage, onStageChange, notes, onUplo
                   {note.type?.includes('pdf')
                     ? <FileText size={12} className="text-red-400 shrink-0"/>
                     : <ImageIcon size={12} className="text-blue-400 shrink-0"/>}
-                  <a href={note.url} target="_blank" rel="noreferrer"
+                  <a href={note.isPdf ? note.url.replace("/raw/upload/", "/raw/upload/fl_attachment/") : note.url} target="_blank" rel="noreferrer"
                      className="flex-1 text-xs font-medium truncate" style={{ color: '#60a5fa' }}>
                     {note.name}
                   </a>
