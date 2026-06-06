@@ -93,7 +93,7 @@ function ChapterDetail({ course, chapterIdx, stage, onStageChange, notes, onUplo
                      className="flex-1 text-xs font-medium truncate" style={{ color: '#60a5fa' }}>
                     {note.name}
                   </a>
-                  <button onClick={() => onDeleteNote(note.id, note.path)}
+                  <button onClick={() => onDeleteNote(note.id)}
                           style={{ color: 'rgba(255,255,255,0.25)' }}>
                     <X size={11}/>
                   </button>
