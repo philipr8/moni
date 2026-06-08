@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Edit3, X, Check } from 'lucide-react';
 import Tilt from 'react-parallax-tilt';
 import { useUserData } from '../../context/UserDataContext';
@@ -12,15 +12,14 @@ import TodoList from './TodoList';
 import ProgressSummary from './ProgressSummary';
 import { FloatingTorus, FloatingGem } from '../effects/FloatingShape';
 
-/* ── Scroll reveal wrapper ── */
+/* ── Scroll reveal ── */
 function Reveal({ children, delay = 0, className = '' }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 56, rotateX: 12 }}
-      whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
-      transition={{ duration: 0.78, delay, ease: [0.22, 1, 0.36, 1] }}
-      viewport={{ once: true, margin: '-80px' }}
-      style={{ transformStyle: 'preserve-3d' }}
+      initial={{ opacity: 0, y: 48 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
+      viewport={{ once: true, margin: '-60px' }}
       className={className}
     >
       {children}
@@ -28,31 +27,21 @@ function Reveal({ children, delay = 0, className = '' }) {
   );
 }
 
-/* ── Card tilt wrapper ── */
-function TiltCard({ children, className = '', maxAngle = 8 }) {
+/* ── Card tilt ── */
+function TiltCard({ children, maxAngle = 8 }) {
   return (
     <Tilt
       tiltMaxAngleX={maxAngle}
       tiltMaxAngleY={maxAngle}
       glareEnable
-      glareMaxOpacity={0.08}
+      glareMaxOpacity={0.07}
       glareColor="#A8C5A0"
       glarePosition="all"
       glareBorderRadius="20px"
       transitionSpeed={1500}
-      className={className}
     >
       {children}
     </Tilt>
-  );
-}
-
-/* ── Floating shape divider ── */
-function ShapeDivider({ shape = 'torus' }) {
-  return (
-    <div className="flex justify-center items-center py-1 opacity-70" style={{ pointerEvents: 'none' }}>
-      {shape === 'torus' ? <FloatingTorus /> : <FloatingGem />}
-    </div>
   );
 }
 
@@ -111,7 +100,7 @@ function HeroCountdown() {
       </div>
 
       <div className="flex items-end justify-center gap-4">
-        {units.map(({ label, v }, i) => (
+        {units.map(({ label, v }) => (
           <div key={label} className="text-center">
             <AnimatePresence mode="wait">
               <motion.div key={v}
@@ -120,8 +109,7 @@ function HeroCountdown() {
                 className="font-display font-black leading-none tabular-nums"
                 style={{ fontSize: label === 'DAYS' ? '4.5rem' : '3rem',
                          background: 'linear-gradient(180deg, #ffffff 0%, rgba(168,197,160,0.85) 100%)',
-                         WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-                         textShadow: 'none' }}>
+                         WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                 {label === 'DAYS' ? time.days : pad(v)}
               </motion.div>
             </AnimatePresence>
@@ -147,10 +135,8 @@ function HeroCountdown() {
               <input type="date" min={new Date().toISOString().split('T')[0]}
                      value={newDate} onChange={e => setNewDate(e.target.value)}
                      className="field flex-1 text-sm" />
-              <button onClick={handleSave}
-                      className="btn-primary px-3 py-2 text-sm rounded-xl"><Check size={14}/></button>
-              <button onClick={() => setEditing(false)}
-                      className="px-3 py-2 rounded-xl text-sm"
+              <button onClick={handleSave} className="btn-primary px-3 py-2 text-sm rounded-xl"><Check size={14}/></button>
+              <button onClick={() => setEditing(false)} className="px-3 py-2 rounded-xl text-sm"
                       style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.5)' }}>
                 <X size={14}/>
               </button>
@@ -171,126 +157,86 @@ export default function HomePage() {
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
 
-  const containerRef = useRef(null);
-  const { scrollYProgress } = useScroll({ target: containerRef, offset: ['start start', 'end end'] });
-
-  /* Parallax depth layers */
-  const bgY   = useTransform(scrollYProgress, [0, 1], ['0%', '12%']);
-  const midY  = useTransform(scrollYProgress, [0, 1], ['0%', '28%']);
-  const fgY   = useTransform(scrollYProgress, [0, 1], ['0%', '48%']);
-
-  /* Hero entrance scale (cinematic push-through) */
-  const heroScale   = useTransform(scrollYProgress, [0, 0.25], [1, 0.92]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.30], [1, 0]);
-
   return (
-    <div ref={containerRef}>
+    <div>
       {/* ══════════════════════════════
-          HERO — 3D cinematic entrance
+          HERO
           ══════════════════════════════ */}
-      <motion.div
-        className="relative pt-12 pb-10 px-5 overflow-hidden"
-        style={{ perspective: '1000px', perspectiveOrigin: '50% 50%', scale: heroScale, opacity: heroOpacity }}
-      >
-        {/* Hero glass background — deepest layer */}
-        <motion.div
-          className="absolute inset-0"
-          style={{
-            background: 'linear-gradient(180deg, rgba(13,43,31,0.0) 0%, rgba(13,43,31,0.5) 100%)',
-            y: bgY,
-          }}
-        />
+      <div className="relative pt-12 pb-10 px-5 overflow-hidden">
+        <div className="absolute inset-0"
+             style={{ background: 'linear-gradient(180deg, rgba(13,43,31,0.0) 0%, rgba(13,43,31,0.5) 100%)' }} />
 
         <div className="relative z-10 max-w-2xl mx-auto">
-          {/* Greeting — drops from above */}
-          <motion.div
-            className="text-center mb-6"
-            initial={{ opacity: 0, y: -40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          >
+          {/* Greeting */}
+          <motion.div className="text-center mb-6"
+            initial={{ opacity: 0, y: -30 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}>
             <p className="text-sm font-semibold mb-0.5" style={{ color: 'rgba(168,197,160,0.65)' }}>
               {greeting},
             </p>
             <h1 className="font-display text-3xl font-black gradient-text">{firstName} 👋</h1>
           </motion.div>
 
-          {/* Countdown — rises from below, mid layer */}
-          <motion.div
-            className="card mb-8 relative"
-            style={{ y: midY }}
-            initial={{ opacity: 0, y: 60 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.0, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <TiltCard maxAngle={5}>
+          {/* Countdown */}
+          <motion.div className="card mb-8 relative"
+            initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}>
+            <TiltCard maxAngle={4}>
               <HeroCountdown />
             </TiltCard>
           </motion.div>
 
-          {/* Duck pond — scales up from centre, foreground layer */}
-          <motion.div
-            className="max-w-sm mx-auto"
-            style={{ y: fgY }}
-            initial={{ opacity: 0, scale: 0.80 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.1, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <TiltCard maxAngle={12}>
+          {/* Duck pond */}
+          <motion.div className="max-w-sm mx-auto"
+            initial={{ opacity: 0, scale: 0.88 }} animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.0, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}>
+            <TiltCard maxAngle={10}>
               <DucklingPond />
             </TiltCard>
           </motion.div>
         </div>
-      </motion.div>
+      </div>
 
       {/* ══════════════════════════════
-          DASHBOARD CONTENT
+          DASHBOARD
           ══════════════════════════════ */}
       <div className="px-4 max-w-2xl mx-auto">
 
-        {/* Floating shape divider */}
-        <ShapeDivider shape="torus" />
+        <div className="flex justify-center my-1">
+          <FloatingTorus />
+        </div>
 
-        {/* CARS banner */}
-        <Reveal delay={0}>
+        <Reveal>
           <div className="mb-4">
-            <TiltCard maxAngle={6}>
-              <CARSBanner />
-            </TiltCard>
+            <CARSBanner />
           </div>
         </Reveal>
 
-        {/* Floating shape divider */}
-        <ShapeDivider shape="gem" />
+        <div className="flex justify-center my-1">
+          <FloatingGem />
+        </div>
 
-        {/* Grid */}
         <div className={`${isMobile ? 'space-y-4' : 'grid grid-cols-1 md:grid-cols-2 gap-4 desktop-grid'}`}>
           <div className="space-y-4">
             <Reveal delay={0}>
-              <TiltCard>
-                <ProgressSummary />
-              </TiltCard>
+              <ProgressSummary />
             </Reveal>
           </div>
           <div className="space-y-4">
             <Reveal delay={0.08}>
-              <TiltCard>
-                <CalendarWidget />
-              </TiltCard>
+              <CalendarWidget />
             </Reveal>
             <Reveal delay={0.14}>
-              <TiltCard>
-                <TodoList />
-              </TiltCard>
+              <TodoList />
             </Reveal>
           </div>
         </div>
 
-        {/* Floating shape divider */}
-        <ShapeDivider shape="torus" />
+        <div className="flex justify-center my-1">
+          <FloatingTorus />
+        </div>
 
-        {/* Course progress */}
-        <Reveal delay={0} className="mt-4">
+        <Reveal className="mt-4">
           <CourseProgress />
         </Reveal>
       </div>
