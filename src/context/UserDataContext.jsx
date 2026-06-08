@@ -41,10 +41,17 @@ export function UserDataProvider({ children }) {
 
   useEffect(() => {
     if (!uid) { setIsLoading(false); return; }
-    const unsubscribe = onSnapshot(doc(db, 'users', uid), (snap) => {
-      setUserData(snap.exists() ? { ...DEFAULT_DATA, ...snap.data() } : null);
-      setIsLoading(false);
-    });
+    const unsubscribe = onSnapshot(
+      doc(db, 'users', uid),
+      (snap) => {
+        setUserData(snap.exists() ? { ...DEFAULT_DATA, ...snap.data() } : null);
+        setIsLoading(false);
+      },
+      (error) => {
+        console.error('Firestore error:', error.code, error.message);
+        setIsLoading(false);
+      }
+    );
     return unsubscribe;
   }, [uid]);
 
