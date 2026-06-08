@@ -1,4 +1,4 @@
-import { useMemo, lazy, Suspense } from 'react';
+import { useMemo, lazy, Suspense, Component } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from './context/AuthContext';
@@ -14,6 +14,12 @@ import NotesPage from './components/notes/NotesPage';
 import SettingsPage from './components/settings/SettingsPage';
 
 const Forest3D = lazy(() => import('./components/effects/Forest3D'));
+
+class ForestErrorBoundary extends Component {
+  state = { failed: false };
+  static getDerivedStateFromError() { return { failed: true }; }
+  render() { return this.state.failed ? null : this.props.children; }
+}
 
 /* ── Firefly particles (pure CSS, no library deps) ── */
 const FIREFLY_ANIMS = ['firefly-rise-a','firefly-rise-b','firefly-rise-c','firefly-rise-d','firefly-rise-e','firefly-rise-f'];
@@ -120,9 +126,11 @@ export default function App() {
   return (
     <div className="app-bg">
       {/* 3D forest background */}
-      <Suspense fallback={null}>
-        <Forest3D />
-      </Suspense>
+      <ForestErrorBoundary>
+        <Suspense fallback={null}>
+          <Forest3D />
+        </Suspense>
+      </ForestErrorBoundary>
       {/* Mesh gradient orbs */}
       <div className="mesh-orb mesh-orb-1" />
       <div className="mesh-orb mesh-orb-2" />

@@ -460,6 +460,19 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .mobile-layout .desktop-grid { grid-template-columns: 1fr !important; }
 
 /* ═══════════════════════════════════════════
+   FLOATING SHAPE ANIMATIONS
+   ═══════════════════════════════════════════ */
+@keyframes torus-spin {
+  0%   { transform: rotate(0deg) scale(1); }
+  50%  { transform: rotate(180deg) scale(1.08); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+@keyframes gem-bob {
+  0%,100% { transform: translateY(0) rotate(0deg); }
+  50%     { transform: translateY(-6px) rotate(15deg); }
+}
+
+/* ═══════════════════════════════════════════
    LENIS SMOOTH SCROLL
    ═══════════════════════════════════════════ */
 html.lenis, html.lenis body { height: auto; }

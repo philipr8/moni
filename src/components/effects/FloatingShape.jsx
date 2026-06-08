@@ -1,55 +1,38 @@
-import { useRef } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
-
-function RotatingTorus() {
-  const ref = useRef()
-  useFrame(({ clock }) => {
-    ref.current.rotation.x = clock.elapsedTime * 0.3
-    ref.current.rotation.y = clock.elapsedTime * 0.5
-  })
-  return (
-    <mesh ref={ref}>
-      <torusGeometry args={[1, 0.32, 12, 28]} />
-      <meshStandardMaterial color="#2D6A4F" transparent opacity={0.70} />
-    </mesh>
-  )
-}
-
-function BobbingGem() {
-  const ref = useRef()
-  useFrame(({ clock }) => {
-    ref.current.rotation.y = clock.elapsedTime * 0.45
-    ref.current.rotation.x = clock.elapsedTime * 0.2
-    ref.current.position.y = Math.sin(clock.elapsedTime * 1.2) * 0.28
-  })
-  return (
-    <mesh ref={ref}>
-      <icosahedronGeometry args={[1, 0]} />
-      <meshStandardMaterial color="#4ade80" transparent opacity={0.60} />
-    </mesh>
-  )
-}
-
+/* Pure CSS floating shapes — no Three.js dependency */
 export function FloatingTorus() {
   return (
-    <div style={{ width: 100, height: 100, pointerEvents: 'none', opacity: 0.55 }}>
-      <Canvas camera={{ position: [0, 0, 4], fov: 45 }} gl={{ antialias: false, alpha: true }}>
-        <ambientLight intensity={0.5} />
-        <pointLight position={[2, 3, 2]} intensity={1.2} color="#52B788" />
-        <RotatingTorus />
-      </Canvas>
+    <div style={{ width: 80, height: 80, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
+      <div style={{
+        width: 48, height: 48,
+        borderRadius: '50%',
+        border: '6px solid rgba(45,106,79,0.55)',
+        boxShadow: '0 0 18px rgba(74,222,128,0.18), inset 0 0 12px rgba(45,106,79,0.2)',
+        animation: 'torus-spin 6s linear infinite',
+      }} />
     </div>
   )
 }
 
 export function FloatingGem() {
   return (
-    <div style={{ width: 100, height: 100, pointerEvents: 'none', opacity: 0.50 }}>
-      <Canvas camera={{ position: [0, 0, 4], fov: 45 }} gl={{ antialias: false, alpha: true }}>
-        <ambientLight intensity={0.5} />
-        <pointLight position={[2, 3, 2]} intensity={1.2} color="#4ade80" />
-        <BobbingGem />
-      </Canvas>
+    <div style={{ width: 80, height: 80, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
+      <svg width="36" height="36" viewBox="0 0 36 36" style={{ animation: 'gem-bob 3s ease-in-out infinite' }}>
+        <polygon
+          points="18,2 34,12 34,24 18,34 2,24 2,12"
+          fill="none"
+          stroke="rgba(74,222,128,0.55)"
+          strokeWidth="1.5"
+          style={{ filter: 'drop-shadow(0 0 6px rgba(74,222,128,0.35))' }}
+        />
+        <polygon
+          points="18,2 34,12 18,18"
+          fill="rgba(74,222,128,0.08)"
+        />
+        <polygon
+          points="2,12 18,18 18,34"
+          fill="rgba(45,106,79,0.10)"
+        />
+      </svg>
     </div>
   )
 }
