@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { doc, onSnapshot, setDoc, updateDoc } from 'firebase/firestore';
-import { db } from '../firebase/config';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '../firebase/config';
 import { useAuth } from './AuthContext';
 
 const UserDataContext = createContext(null);
@@ -30,42 +31,6 @@ const DEFAULT_DATA = {
   layoutMode: 'desktop',
 };
 
-/* ── Cloudinary upload ──
-   PDFs → raw resource type (preserves the actual file)
-   Images → image resource type (optimised delivery)
-   ─────────────────────────────────────────────────── */
-async function uploadToCloudinary(file) {
-  const cloudName    = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-  const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
-
-  if (!cloudName || !uploadPreset) {
-    throw new Error('Cloudinary not configured. Add VITE_CLOUDINARY_CLOUD_NAME and VITE_CLOUDINARY_UPLOAD_PRESET to your .env file.');
-  }
-
-  console.log('File name:', file.name);
-  console.log('File size:', file.size);
-  console.log('File type:', file.type);
-
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('upload_preset', uploadPreset);
-  formData.append('resource_type', 'auto');
-
-  const res = await fetch(
-    `https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`,
-    { method: 'POST', body: formData }
-    // Do NOT set Content-Type header — browser sets it with boundary
-  );
-
-  const data = await res.json();
-  console.log('Cloudinary response:', data);
-
-  if (!res.ok || data.error) {
-    throw new Error(data.error?.message || `Upload failed (${res.status})`);
-  }
-
-  return data.secure_url;
-}
 
 export function UserDataProvider({ children }) {
   const { user } = useAuth();
@@ -197,17 +162,19 @@ export function UserDataProvider({ children }) {
     });
   }, [uid, userData]);
 
-  // Notes — uploaded to Cloudinary (free), URL saved to Firestore
   const uploadNote = useCallback(async (courseId, chapter, file) => {
     if (!uid || !userData) return null;
-    const url = await uploadToCloudinary(file);
-    const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+    console.log('File name:', file.name);
+    console.log('File size:', file.size);
+    const path = `notes/${uid}/${courseId}/${chapter}/${Date.now()}-${file.name}`;
+    const snapshot = await uploadBytes(ref(storage, path), file);
+    const url = await getDownloadURL(snapshot.ref);
+    console.log('Download URL:', url);
     const note = {
       id: genId(),
       name: file.name,
       url,
       type: file.type,
-      isPdf,
       uploadedAt: Date.now(),
     };
     const key = `${courseId}-${chapter}`;

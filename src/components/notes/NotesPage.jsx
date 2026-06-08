@@ -20,7 +20,7 @@ function NoteCard({ note, showContext, onDelete }) {
         </p>
       </div>
       <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-        <a href={note.isPdf ? note.url.replace("/raw/upload/", "/raw/upload/fl_attachment/") : note.url} target="_blank" rel="noreferrer"
+        <a href={note.url} target="_blank" rel="noreferrer noopener"
            className="w-7 h-7 flex items-center justify-center rounded-lg transition-colors"
            style={{ background:'rgba(96,165,250,0.15)', color:'#60a5fa' }}>
           <ExternalLink size={11}/>
