@@ -1,8 +1,9 @@
-import { useMemo } from 'react';
+import { useMemo, lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from './context/AuthContext';
 import { UserDataProvider, useUserData } from './context/UserDataContext';
+import { useLenis } from './hooks/useLenis';
 import SignIn from './components/auth/SignIn';
 import Onboarding from './components/onboarding/Onboarding';
 import BottomNav from './components/layout/BottomNav';
@@ -11,6 +12,8 @@ import CoursesPage from './components/courses/CoursesPage';
 import CalendarPage from './components/calendar/CalendarPage';
 import NotesPage from './components/notes/NotesPage';
 import SettingsPage from './components/settings/SettingsPage';
+
+const Forest3D = lazy(() => import('./components/effects/Forest3D'));
 
 /* ── Firefly particles (pure CSS, no library deps) ── */
 const FIREFLY_ANIMS = ['firefly-rise-a','firefly-rise-b','firefly-rise-c','firefly-rise-d','firefly-rise-e','firefly-rise-f'];
@@ -111,10 +114,15 @@ function PageWrapper({ children }) {
 
 export default function App() {
   const { user, loading } = useAuth();
+  useLenis();
   if (loading) return <LoadingScreen />;
   if (!user) return <SignIn />;
   return (
     <div className="app-bg">
+      {/* 3D forest background */}
+      <Suspense fallback={null}>
+        <Forest3D />
+      </Suspense>
       {/* Mesh gradient orbs */}
       <div className="mesh-orb mesh-orb-1" />
       <div className="mesh-orb mesh-orb-2" />
@@ -123,6 +131,9 @@ export default function App() {
       <div className="mesh-orb mesh-orb-5" />
       {/* Fireflies */}
       <Fireflies />
+      {/* Depth fog overlays */}
+      <div className="depth-top" />
+      <div className="depth-bottom" />
       <UserDataProvider>
         <AppContent />
       </UserDataProvider>

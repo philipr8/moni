@@ -458,3 +458,46 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 /* Mobile layout */
 .mobile-layout .desktop-grid { grid-template-columns: 1fr !important; }
+
+/* ═══════════════════════════════════════════
+   LENIS SMOOTH SCROLL
+   ═══════════════════════════════════════════ */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+
+/* ═══════════════════════════════════════════
+   3D DEPTH FOG OVERLAYS
+   ═══════════════════════════════════════════ */
+.depth-top {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 200px;
+  background: linear-gradient(180deg, #0D2B1F 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 10;
+}
+.depth-bottom {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 150px;
+  background: linear-gradient(0deg, #060f09 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* ═══════════════════════════════════════════
+   DUCK-BOB ANIMATION (used in loading screen)
+   ═══════════════════════════════════════════ */
+@keyframes duck-bob {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+.animate-duck-bob { animation: duck-bob 2s ease-in-out infinite; }
+
+/* Streak pulse used on bond counter */
+@keyframes streak-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(251,146,60,0.4); }
+  50%       { box-shadow: 0 0 0 8px rgba(251,146,60,0); }
+}
+.animate-streak-pulse { animation: streak-pulse 2.5s ease-in-out infinite; }
