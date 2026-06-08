@@ -37,7 +37,7 @@ if (!isFirebaseConfigured) {
 
   ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
-      <BrowserRouter basename="/moni">
+      <BrowserRouter>
         <AuthProvider>
           <App />
         </AuthProvider>
