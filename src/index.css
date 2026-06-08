@@ -469,7 +469,42 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 @keyframes gem-bob {
   0%,100% { transform: translateY(0) rotate(0deg); }
-  50%     { transform: translateY(-6px) rotate(15deg); }
+  50%     { transform: translateY(-8px) rotate(18deg); }
+}
+
+/* ═══════════════════════════════════════════
+   FOREST BACKGROUND
+   ═══════════════════════════════════════════ */
+@keyframes forest-sway-a {
+  0%,100% { transform: rotate(0deg); }
+  30%     { transform: rotate(0.6deg); }
+  70%     { transform: rotate(-0.4deg); }
+}
+@keyframes forest-sway-b {
+  0%,100% { transform: rotate(0deg); }
+  30%     { transform: rotate(-0.5deg); }
+  70%     { transform: rotate(0.7deg); }
+}
+@keyframes forest-sway-c {
+  0%,100% { transform: rotate(0deg); }
+  50%     { transform: rotate(0.45deg); }
+}
+@keyframes star-twinkle-a {
+  0%,100% { opacity: 0.55; }
+  50%     { opacity: 0.12; }
+}
+@keyframes star-twinkle-b {
+  0%,100% { opacity: 0.30; }
+  50%     { opacity: 0.80; }
+}
+@keyframes star-twinkle-c {
+  0%,100% { opacity: 0.65; }
+  30%     { opacity: 0.18; }
+  60%     { opacity: 0.85; }
+}
+@keyframes aurora-drift {
+  0%,100% { transform: scaleX(1) translateY(0); opacity: 1; }
+  50%     { transform: scaleX(1.12) translateY(-18px); opacity: 0.75; }
 }
 
 /* ═══════════════════════════════════════════
