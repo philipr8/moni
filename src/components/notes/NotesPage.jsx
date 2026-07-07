@@ -45,7 +45,7 @@ export default function NotesPage() {
   const uploadedNotes = userData?.uploadedNotes || {};
   const allNotes = [];
   COURSES.forEach(c => {
-    for (let ch = 1; ch <= 12; ch++) {
+    for (let ch = 1; ch <= c.chapters.length; ch++) {
       const key = `${c.id}-${ch}`;
       (uploadedNotes[key]||[]).forEach(note => {
         allNotes.push({ ...note, courseId:c.id, courseName:c.name, chapter:ch, chapterName:c.chapters[ch-1], key });
@@ -102,7 +102,7 @@ export default function NotesPage() {
         <div className="space-y-3">
           {COURSES.map(course => {
             const courseNotes = [];
-            for (let ch = 1; ch <= 12; ch++) {
+            for (let ch = 1; ch <= course.chapters.length; ch++) {
               const key = `${course.id}-${ch}`;
               (uploadedNotes[key]||[]).forEach(n => courseNotes.push({...n,chapter:ch,chapterName:course.chapters[ch-1],key}));
             }

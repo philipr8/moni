@@ -31,7 +31,7 @@ export default function ProgressSummary() {
   const { userData } = useUserData();
   let total = 0, mastered = 0, inProg = 0;
   COURSES.forEach(c => {
-    for (let ch = 1; ch <= 12; ch++) {
+    for (let ch = 1; ch <= c.chapters.length; ch++) {
       total++;
       const s = userData?.courseProgress?.[c.id]?.[ch];
       if (s === 'mastered') mastered++;
@@ -89,7 +89,7 @@ export default function ProgressSummary() {
           </div>
           <p className="text-[10px] mt-2 font-medium" style={{ color: 'rgba(255,255,255,0.30)' }}>
             {mastered === 0 ? 'Begin your first chapter!'
-              : mastered === total ? '🎉 All 72 chapters mastered!'
+              : mastered === total ? '🎉 All chapters mastered!'
               : `${total - mastered} chapters remaining`}
           </p>
         </div>

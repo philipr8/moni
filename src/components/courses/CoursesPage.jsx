@@ -151,13 +151,14 @@ export default function CoursesPage() {
   const [expandedChapter, setExpandedChapter] = useState(null);
 
   const toggleCourse = (id) => { setExpandedCourse(e => e === id ? null : id); setExpandedChapter(null); };
+  const totalChapters = COURSES.reduce((sum, c) => sum + c.chapters.length, 0);
 
   return (
     <div className="px-4 pt-6 page-content max-w-2xl mx-auto">
       <div className="mb-5">
         <h1 className="font-display text-2xl font-black gradient-text">Courses</h1>
         <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.40)' }}>
-          6 subjects · 72 chapters total
+          6 subjects · {totalChapters} chapters total
         </p>
       </div>
 
@@ -167,7 +168,7 @@ export default function CoursesPage() {
           const mastered = Object.values(progress).filter(s => s === 'mastered').length;
           const reviewed = Object.values(progress).filter(s => s === 'reviewed').length;
           const inProg   = Object.values(progress).filter(s => s === 'in-progress').length;
-          const pct      = Math.round((mastered / 12) * 100);
+          const pct      = Math.round((mastered / course.chapters.length) * 100);
           const isOpen   = expandedCourse === course.id;
 
           return (
@@ -188,7 +189,7 @@ export default function CoursesPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-2">
                       <p className="font-bold" style={{ color: 'rgba(255,255,255,0.92)' }}>{course.name}</p>
-                      <span className="text-sm font-black" style={{ color: course.color }}>{mastered}/12</span>
+                      <span className="text-sm font-black" style={{ color: course.color }}>{mastered}/{course.chapters.length}</span>
                     </div>
                     <div className="h-2.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.07)' }}>
                       <motion.div initial={{ width: 0 }} animate={{ width: `${pct}%` }}

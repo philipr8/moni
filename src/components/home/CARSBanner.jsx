@@ -19,7 +19,8 @@ export default function CARSBanner() {
           <p className="text-white font-bold text-sm">📖 Daily CARS Practice</p>
           <p className="text-blue-100/70 text-xs mt-0.5">Reading comprehension is the most trainable MCAT skill.</p>
         </div>
-        <a href="#cars-practice"
+        <a href="https://jackwestin.com/daily/mcat-practice-passages/cars-practice-passages/"
+           target="_blank" rel="noreferrer noopener"
            className="shrink-0 flex items-center gap-1.5 font-bold text-xs rounded-xl px-3.5 py-2 whitespace-nowrap transition-all"
            style={{ background:'rgba(255,255,255,0.15)', color:'white', border:'1px solid rgba(255,255,255,0.20)' }}>
           Practice <ArrowRight size={11}/>
