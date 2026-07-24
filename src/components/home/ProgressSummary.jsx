@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import CountUp from 'react-countup';
 import { Trophy, Flame, Star, BookOpen } from 'lucide-react';
 import { useUserData } from '../../context/UserDataContext';
-import { COURSES } from '../../data/courses';
+import { COURSES, getLeafChapters } from '../../data/courses';
 
 const STAT_CONFIGS = [
   {
@@ -31,7 +31,8 @@ export default function ProgressSummary() {
   const { userData } = useUserData();
   let total = 0, mastered = 0, inProg = 0;
   COURSES.forEach(c => {
-    for (let ch = 1; ch <= c.chapters.length; ch++) {
+    const leafCount = getLeafChapters(c).length;
+    for (let ch = 1; ch <= leafCount; ch++) {
       total++;
       const s = userData?.courseProgress?.[c.id]?.[ch];
       if (s === 'mastered') mastered++;

@@ -48,18 +48,18 @@ export const COURSES = [
     color: '#1d4ed8',
     bgColor: '#eff6ff',
     chapters: [
-      'Amino Acids & Proteins',
-      'Enzyme Kinetics',
-      'Metabolism Overview',
-      'Glycolysis & Gluconeogenesis',
-      'Citric Acid Cycle',
-      'Oxidative Phosphorylation',
-      'Fatty Acid Metabolism',
-      'Amino Acid Metabolism',
-      'Carbohydrates & Lipids',
-      'DNA & RNA Structure',
-      'Vitamins & Cofactors',
-      'Signal Transduction',
+      'Chapter 1: Amino Acids, Peptides, and Proteins',
+      'Chapter 2: Enzymes',
+      'Chapter 3: Nonenzymatic Protein Function and Protein Analysis',
+      'Chapter 4: Carbohydrate Structure and Function',
+      'Chapter 5: Lipid Structure and Function',
+      'Chapter 6: DNA and Biotechnology',
+      'Chapter 7: RNA and the Genetic Code',
+      'Chapter 8: Biological Membranes',
+      'Chapter 9: Carbohydrate Metabolism I: Glycolysis, Glycogen, Gluconeogenesis, and the Pentose Phosphate Pathway',
+      'Chapter 10: Carbohydrate Metabolism II: Aerobic Respiration',
+      'Chapter 11: Lipid and Amino Acid Metabolism',
+      'Chapter 12: Bioenergetics and Regulation of Metabolism',
     ],
   },
   {
@@ -91,63 +91,17 @@ export const COURSES = [
     bgColor: '#fffbeb',
     chapters: [
       'Chapter 1: Atomic Structure',
-      '1.1 Subatomic Particles',
-      '1.2 Atomic Mass vs. Atomic Weight',
-      '1.3 Rutherford, Planck, and Bohr (High-Yield)',
-      '1.4 Quantum Mechanical Model of Atoms',
       'Chapter 2: The Periodic Table',
-      '2.1 The Periodic Table',
-      '2.2 Types of Elements',
-      '2.3 Periodic Properties of the Elements (High-Yield)',
-      '2.4 The Chemistry of Groups',
       'Chapter 3: Bonding and Chemical Interactions',
-      '3.1 Bonding',
-      '3.2 Ionic Bonds',
-      '3.3 Covalent Bonds (High-Yield)',
-      '3.4 Intermolecular Forces',
       'Chapter 4: Compounds and Stoichiometry',
-      '4.1 Molecules and Moles',
-      '4.2 Representation of Compounds',
-      '4.3 Types of Chemical Reactions',
-      '4.4 Balancing Chemical Equations (High-Yield)',
-      '4.5 Applications of Stoichiometry',
-      '4.6 Ions',
       'Chapter 5: Chemical Kinetics',
-      '5.1 Chemical Kinetics (High-Yield)',
-      '5.2 Reaction Rates',
       'Chapter 6: Equilibrium',
-      '6.1 Equilibrium',
-      "6.2 Le Châtelier's Principle",
-      '6.3 Kinetic and Thermodynamic Control',
       'Chapter 7: Thermochemistry',
-      '7.1 Systems and Processes',
-      '7.2 States and State Functions',
-      '7.3 Heat',
-      '7.4 Enthalpy',
-      '7.5 Entropy',
-      '7.6 Gibbs Free Energy',
       'Chapter 8: The Gas Phase',
-      '8.1 The Gas Phase',
-      '8.2 Ideal Gases (High-Yield)',
-      '8.3 Kinetic Molecular Theory',
-      '8.4 Real Gases',
       'Chapter 9: Solutions',
-      '9.1 Nature of Solutions (High-Yield)',
-      '9.2 Concentration (High-Yield)',
-      '9.3 Solution Equilibria (High-Yield)',
-      '9.4 Colligative Properties',
       'Chapter 10: Acids and Bases',
-      '10.1 Definitions',
-      '10.2 Properties (High-Yield)',
-      '10.3 Polyvalence and Normality',
-      '10.4 Titration and Buffers (High-Yield)',
       'Chapter 11: Oxidation-Reduction Reactions',
-      '11.1 Oxidation-Reduction Reactions',
-      '11.2 Net Ionic Equations',
       'Chapter 12: Electrochemistry',
-      '12.1 Electrochemical Cells (High-Yield)',
-      '12.2 Cell Potentials',
-      '12.3 Electromotive Force and Thermodynamics',
     ],
   },
   {
@@ -181,3 +135,16 @@ export const STAGE_CONFIG = {
 };
 
 export const STAGE_ORDER = ['not-started', 'in-progress', 'reviewed', 'mastered'];
+
+// Flattens a course's chapters into the trackable leaf list — plain-string
+// chapters pass through as-is, and { title, subs } groups expand to their subs
+// (the group title itself is a non-trackable section divider, not a leaf).
+export function getLeafChapters(course) {
+  const leaves = [];
+  course.chapters.forEach(item => {
+    if (typeof item === 'string') leaves.push(item);
+    else if (item.subs?.length) leaves.push(...item.subs);
+    else leaves.push(item.title);
+  });
+  return leaves;
+}

@@ -1,8 +1,8 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, FileText, Image as ImageIcon, ExternalLink, Trash2, Search, FolderOpen } from 'lucide-react';
+import { Upload, FileText, Image as ImageIcon, ExternalLink, Trash2, Search, FolderOpen, ChevronDown } from 'lucide-react';
 import { useUserData } from '../../context/UserDataContext';
-import { COURSES } from '../../data/courses';
+import { COURSES, getLeafChapters } from '../../data/courses';
 
 function NoteCard({ note, showContext, onDelete }) {
   const isPdf = note.type?.includes('pdf') || note.name?.toLowerCase().endsWith('.pdf');
@@ -35,20 +35,47 @@ function NoteCard({ note, showContext, onDelete }) {
   );
 }
 
+function ChapterRow({ course, ch, chName, chNotes, isUp, onUploadClick, onDeleteNote }) {
+  return (
+    <div className="rounded-xl overflow-hidden border" style={{ borderColor:'rgba(255,255,255,0.06)' }}>
+      <div className="flex items-center gap-3 px-3.5 py-3">
+        <div className="w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-black text-white"
+             style={{ background:course.color }}>{ch}</div>
+        <span className="flex-1 text-sm font-medium" style={{ color:'rgba(255,255,255,0.70)' }}>{chName}</span>
+        <button onClick={onUploadClick} disabled={isUp}
+           className="flex items-center gap-1 text-xs rounded-lg px-2.5 py-1.5 font-semibold transition-all"
+           style={{ background:'rgba(74,222,128,0.10)', color:'rgba(168,197,160,0.80)', border:'1px solid rgba(74,222,128,0.18)' }}>
+          {isUp ? <div className="w-3 h-3 border border-glow-sage/50 border-t-glow-sage rounded-full animate-spin"/> : <Upload size={10}/>}
+          Upload
+        </button>
+      </div>
+      {chNotes.length>0 && (
+        <div className="px-3.5 pb-3 space-y-1.5">
+          {chNotes.map(note => (
+            <NoteCard key={note.id} note={note} onDelete={() => onDeleteNote(note.id)}/>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function NotesPage() {
   const { userData, uploadNote, deleteNote } = useUserData();
   const [search, setSearch] = useState('');
   const [uploadingKey, setUploadingKey] = useState(null);
   const [expandedCourse, setExpandedCourse] = useState(null);
+  const [expandedGroup, setExpandedGroup] = useState(null);
   const fileRefs = useRef({});
 
   const uploadedNotes = userData?.uploadedNotes || {};
   const allNotes = [];
   COURSES.forEach(c => {
-    for (let ch = 1; ch <= c.chapters.length; ch++) {
+    const leaves = getLeafChapters(c);
+    for (let ch = 1; ch <= leaves.length; ch++) {
       const key = `${c.id}-${ch}`;
       (uploadedNotes[key]||[]).forEach(note => {
-        allNotes.push({ ...note, courseId:c.id, courseName:c.name, chapter:ch, chapterName:c.chapters[ch-1], key });
+        allNotes.push({ ...note, courseId:c.id, courseName:c.name, chapter:ch, chapterName:leaves[ch-1], key });
       });
     }
   });
@@ -102,9 +129,10 @@ export default function NotesPage() {
         <div className="space-y-3">
           {COURSES.map(course => {
             const courseNotes = [];
-            for (let ch = 1; ch <= course.chapters.length; ch++) {
+            const courseLeaves = getLeafChapters(course);
+            for (let ch = 1; ch <= courseLeaves.length; ch++) {
               const key = `${course.id}-${ch}`;
-              (uploadedNotes[key]||[]).forEach(n => courseNotes.push({...n,chapter:ch,chapterName:course.chapters[ch-1],key}));
+              (uploadedNotes[key]||[]).forEach(n => courseNotes.push({...n,chapter:ch,chapterName:courseLeaves[ch-1],key}));
             }
             const isOpen = expandedCourse === course.id;
             return (
